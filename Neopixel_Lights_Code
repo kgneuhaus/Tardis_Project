@@ -1,0 +1,59 @@
+#include <Adafruit_NeoPixel.h>
+
+// Which pin on the Arduino is connected to the NeoPixels?
+int LEDPIN = 9;
+
+// How many NeoPixels are attached to the Arduino?
+int NUMPIXELS = 9; // Changed to 9 for your setup
+
+// When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
+
+int delayval = 500; // delay for half a second
+
+void setup() {
+  pixels.begin(); // This initializes the NeoPixel library.
+}
+
+void loop() {
+  // Turn 9 lights green one by one
+  for (int i = 0; i < NUMPIXELS; i++) {
+    pixels.setPixelColor(i, pixels.Color(0, 255, 0)); // Green color
+    pixels.show(); // This sends the updated pixel color to the hardware.
+    delay(500); // Delay for half a second before lighting the next pixel
+  }
+
+  // Flame effect after the green lights
+  flameEffect();
+}
+
+void flameEffect() {
+  uint32_t colors[] = {
+    pixels.Color(0, 0, 255),    
+    pixels.Color(0, 255, 255),  
+    pixels.Color(0, 255, 255),    
+    pixels.Color(255, 255, 255),  
+    pixels.Color(255, 255, 255),  
+    pixels.Color(0, 0, 255),  
+  };
+
+  while (true) {
+    for (int i = 0; i < NUMPIXELS; i++) {
+      // Assign random flame colors to each pixel for a moving flame effect
+      int colorIndex = random(0, 6); // Randomly pick one of the 6 flame colors
+      pixels.setPixelColor(i, colors[colorIndex]);
+    }
+
+    // Shift the pixels upwards to create the "flame" movement
+    for (int i = NUMPIXELS - 1; i > 0; i--) {
+      pixels.setPixelColor(i, pixels.getPixelColor(i - 1)); // Shift colors up
+    }
+
+    // Set the first pixel to a random flame color
+    pixels.setPixelColor(0, colors[random(0, 6)]);
+
+    pixels.show(); // Update the pixel color
+
+    delay(100); // Adjust delay to change the speed of flame movement
+  }
+}
