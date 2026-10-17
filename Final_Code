@@ -1,0 +1,3074 @@
+const int trigPin = 13;
+const int echoPin = 12;
+
+int duration = pulseIn(echoPin, HIGH);
+int distance = (duration/2) / 29.1;
+
+#include "pitches.h"
+
+// notes in the melody:
+int melody[] = {
+  NOTE_B7, NOTE_G1, NOTE_B5, NOTE_B1, NOTE_D7, NOTE_C5, NOTE_B2, NOTE_B7, NOTE_A7, NOTE_B7, NOTE_C2, NOTE_D8, NOTE_B3, NOTE_C1, NOTE_D6, NOTE_B2, NOTE_B7, NOTE_G1, NOTE_B5, NOTE_B1
+};
+
+// note durations: 4 = quarter note, 8 = eighth note, etc.:
+int noteDurations[] = {
+  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+};
+
+#include <Adafruit_NeoPixel.h>
+
+// Which pin on the Arduino is connected to the NeoPixels?
+int LEDPIN = 9;
+
+// How many NeoPixels are attached to the Arduino?
+int NUMPIXELS = 9; // Changed to 9 for your setup
+
+// When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
+
+int delayval = 500; // delay for half a second
+ 
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+  pixels.begin(); // This initializes the NeoPixel library.
+}
+
+void loop() {
+ 
+  double duration, distance;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin,LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration/2) / 29.1;
+  Serial.println(distance);
+  delay(100);
+
+  if( distance < 80){
+
+    for (int thisNote = 0; thisNote < 20; thisNote++) {
+
+      // to calculate the note duration, take one second divided by the note type.
+      //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+      int noteDuration = 1000 / noteDurations[thisNote];
+
+      tone(8, melody[thisNote], noteDuration);
+
+      // to distinguish the notes, set a minimum time between them.
+      // the note's duration + 30% seems to work well:
+      int pauseBetweenNotes = noteDuration * .5;
+      delay(pauseBetweenNotes);
+
+      // stop the tone playing:
+      noTone(8);
+     
+      // Flame effect after the green lights
+      flameEffect();
+    }
+  }
+}
+
+void flameEffect() {
+  uint32_t colors[] = {
+    pixels.Color(0, 0, 255),    
+    pixels.Color(0, 255, 255),  
+    pixels.Color(0, 255, 255),    
+    pixels.Color(255, 255, 255),  
+    pixels.Color(255, 255, 255),  
+    pixels.Color(0, 0, 255),  
+  };
+
+  while (true) {
+    for (int i = 0; i < NUMPIXELS; i++) {
+      // Assign random flame colors to each pixel for a moving flame effect
+      int colorIndex = random(0, 6); // Randomly pick one of the 6 flame colors
+      pixels.setPixelColor(i, colors[colorIndex]);
+    }
+
+    // Shift the pixels upwards to create the "flame" movement
+    for (int i = NUMPIXELS - 1; i > 0; i--) {
+      pixels.setPixelColor(i, pixels.getPixelColor(i - 1)); // Shift colors up
+    }
+
+    // Set the first pixel to a random flame color
+    pixels.setPixelColor(0, colors[random(0, 6)]);
+
+    pixels.show(); // Update the pixel color
+    delay(100); // Adjust delay to change the speed of flame movement
+  }
+}
+
+const int trigPin = 13;
+const int echoPin = 12;
+
+int duration = pulseIn(echoPin, HIGH);
+int distance = (duration/2) / 29.1;
+
+#include "pitches.h"
+
+// notes in the melody:
+int melody[] = {
+  NOTE_B7, NOTE_G1, NOTE_B5, NOTE_B1, NOTE_D7, NOTE_C5, NOTE_B2, NOTE_B7, NOTE_A7, NOTE_B7, NOTE_C2, NOTE_D8, NOTE_B3, NOTE_C1, NOTE_D6, NOTE_B2, NOTE_B7, NOTE_G1, NOTE_B5, NOTE_B1
+};
+
+// note durations: 4 = quarter note, 8 = eighth note, etc.:
+int noteDurations[] = {
+  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+};
+
+#include <Adafruit_NeoPixel.h>
+
+// Which pin on the Arduino is connected to the NeoPixels?
+int LEDPIN = 9;
+
+// How many NeoPixels are attached to the Arduino?
+int NUMPIXELS = 9; // Changed to 9 for your setup
+
+// When we setup the NeoPixel library, we tell it how many pixels, and which pin to use to send signals.
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
+
+//int delayval = 2; // delay for half a second
+ 
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  Serial.begin(9600);
+  pixels.begin(); // This initializes the NeoPixel library.
+}
+
+void loop() {
+ 
+  double duration, distance;
+  digitalWrite(trigPin, LOW);
+  //delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  //delayMicroseconds(2);
+  digitalWrite(trigPin,LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration/2) / 29.1;
+  Serial.println(distance);
+  //delay(10);
+
+  if( distance < 80){
+    for (int thisNote = 0; thisNote < 20; thisNote++) {
+
+      // to calculate the note duration, take one second divided by the note type.
+      //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+      int noteDuration = 1000 / noteDurations[thisNote];
+
+      tone(8, melody[thisNote], noteDuration);
+
+      // to distinguish the notes, set a minimum time between them.
+      // the note's duration + 30% seems to work well:
+      int pauseBetweenNotes = noteDuration * .5;
+      delay(pauseBetweenNotes);
+      Serial.println("music is being played");
+
+      // stop the tone playing:
+      //noTone(8);
+   
+    }
+     //while (create pull up )
+      // Flame effect after the green lights
+      flameEffect();
+      flameDarken();
+  }
+}
+
+void flameEffect() {
+  uint32_t colors[] = {
+    pixels.Color(0, 0, 255),    
+    pixels.Color(0, 255, 255),  
+    pixels.Color(0, 255, 255),    
+    pixels.Color(255, 255, 255),  
+    pixels.Color(255, 255, 255),  
+    pixels.Color(0, 0, 255),  
+   
+  };
+
+    for (int i = 0; i < NUMPIXELS; i++) {
+       //Assign random flame colors to each pixel for a moving flame effect
+     int colorIndex = random(0, 6); // Randomly pick one of the 6 flame colors
+      pixels.setPixelColor(i, colors[colorIndex]);
+    }
+
+    // Shift the pixels upwards to create the "flame" movement
+    for (int i = NUMPIXELS - 1; i > 0; i--) {
+     pixels.setPixelColor(i, pixels.getPixelColor(i - 1)); // Shift colors up
+    }
+
+    //Set the first pixel to a random flame color
+    pixels.setPixelColor(0, colors[random(0, 6)]);
+
+   pixels.show(); // Update the pixel color
+    Serial.println("lights are flashing");
+}
+
+void flameDarken() {
+  uint32_t colors[] = {
+    pixels.Color(0, 0, 0),    
+    pixels.Color(0, 0, 0),  
+    pixels.Color(0, 0, 0),    
+    pixels.Color(0, 0, 0),  
+    pixels.Color(0, 0, 0),
+    pixels.Color(0, 0, 0),
+  };
+
+     for (int i = 0; i < NUMPIXELS; i++) {
+      // Assign random flame colors to each pixel for a moving flame effect
+      int colorIndex = random(0, 6); // Randomly pick one of the 6 flame colors
+     pixels.setPixelColor(i, colors[colorIndex]);
+    }
+
+    // Shift the pixels upwards to create the "flame" movement
+    for (int i = NUMPIXELS - 1; i > 0; i--) {
+    pixels.setPixelColor(i, pixels.getPixelColor(i - 1)); // Shift colors up
+     }
+
+     // Set the first pixel to a random flame color
+    pixels.setPixelColor(0, colors[random(0, 6)]);
+
+     pixels.show(); // Update the pixel color
+   Serial.println("lights are flashing");
+   }
+
+How to upload led matrix animation
+
+https://app.arduino.cc/things/0582c96a-19d0-4adb-b32b-c7a0430414f0/sketch
+
+ #include "Arduino_LED_Matrix.h"
+
+//include the "animation.h" header file that stores the frames for the animation
+#include "spin.h"
+
+// make an instance of the library:
+ArduinoLEDMatrix matrix;
+
+void setup() {
+  //load frames from the animation.h file
+  matrix.loadSequence(spin);
+
+  // start the matrix
+  matrix.begin();
+
+  //play the animation on the matrix
+  matrix.play(true);
+}
+
+void loop() {
+}
+
+pacman
+const uint32_t pacman[][4] = {
+	{
+		0x38044382,
+		0x78278234,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044682,
+		0xf82f8264,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044c83,
+		0xe8de82c4,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044c83,
+		0xe8de82c4,
+		0x40380fff,
+		66
+	},
+	{
+		0x3804708f,
+		0x89788b04,
+		0x40380fff,
+		66
+	},
+	{
+		0x3804708f,
+		0x89788b04,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8208204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8208204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044088,
+		0x9008804,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044088,
+		0x9008804,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38144182,
+		0x18218214,
+		0x41381fff,
+		66
+	},
+	{
+		0x38144182,
+		0x18218214,
+		0x41381fff,
+		66
+	},
+	{
+		0x38144282,
+		0x28c38224,
+		0x42383fff,
+		66
+	},
+	{
+		0x38144282,
+		0x28c38224,
+		0x42383fff,
+		66
+	},
+	{
+		0x38344488,
+		0x49068844,
+		0x45386fff,
+		66
+	},
+	{
+		0x38344488,
+		0x49068844,
+		0x45386fff,
+		66
+	},
+	{
+		0x38744882,
+		0x88cd8284,
+		0x4a38dfff,
+		66
+	},
+	{
+		0x38744882,
+		0x88cd8284,
+		0x4a38dfff,
+		66
+	},
+	{
+		0x38f45189,
+		0x191b8914,
+		0x5539bfff,
+		66
+	},
+	{
+		0x38f45189,
+		0x191b8914,
+		0x5539bfff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8208204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8208204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+	{
+		0x38044082,
+		0x8c08204,
+		0x40380fff,
+		66
+	},
+{
+        0x38044088,
+        0x9008804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9018804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9118804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9118804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9208804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9218804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9108804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9108804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8208204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8208204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9008804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9008804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044182,
+        0x18c18214,
+        0x41381fff,
+        66
+    },
+    {
+        0x38144282,
+        0x28238224,
+        0x42383fff,
+        66
+    },
+    {
+        0x38344482,
+        0x48c68244,
+        0x45386fff,
+        66
+    },
+    {
+        0x38744882,
+        0x88cd8284,
+        0x4a38dfff,
+        66
+    },
+    {
+        0x38e45189,
+        0x191b8914,
+        0x5539bfff,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x0,
+        0x0,
+        0x0,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x0,
+        0x0,
+        0x0,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x0,
+        0x400,
+        0x0,
+        66
+    },
+    {
+        0x0,
+        0x600,
+        0x0,
+        66
+    },
+    {
+        0x0,
+        0x900600,
+        0x90000000,
+        66
+    },
+    {
+        0x0,
+        0x900600,
+        0x90000000,
+        66
+    },
+    {
+        0x10,
+        0x80900600,
+        0x90108000,
+        66
+    },
+    {
+        0x10,
+        0x80900600,
+        0x90108000,
+        66
+    },
+    {
+        0x30,
+        0xc0900600,
+        0x9030c000,
+        66
+    },
+    {
+        0x30,
+        0xc0900600,
+        0x9030c000,
+        66
+    },
+    {
+        0x40230,
+        0xc0900600,
+        0x9030c402,
+        66
+    },
+    {
+        0x40230,
+        0xc0900600,
+        0x9030c402,
+        66
+    },
+    {
+        0xc0330,
+        0xc0900600,
+        0x9030cc03,
+        66
+    },
+    {
+        0xc0330,
+        0xc0900600,
+        0x9030cc03,
+        66
+    },
+    {
+        0x801c0330,
+        0xc0900600,
+        0x9030cc03,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    }
+};
+
+
+
+wink
+const uint32_t wink[][4] = {
+	{
+		0xf010829,
+		0x42942042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x42942042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x42942042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x42942042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x42942042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010828,
+		0x42b43042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010828,
+		0x42b43042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010828,
+		0x42b43042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010828,
+		0x42b43042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010828,
+		0x42b43042,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x429430c2,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x429430c2,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x429430c2,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x429430c2,
+		0xf41080f0,
+		66
+	},
+	{
+		0xf010829,
+		0x429430c2,
+		0xf41080f0,
+		66
+	}
+};
+
+turnoff 
+
+const uint32_t turnoff[][4] = {
+	{
+		0xffffffff,
+		0xffffffff,
+		0xffffffff,
+		66
+	},
+	{
+		0xffffffff,
+		0xffffffff,
+		0xffffffff,
+		66
+	},
+	{
+		0x7fe7f,
+		0xe7fe7fe7,
+		0xfe7fe000,
+		66
+	},
+	{
+		0x7fe7f,
+		0xe7fe7fe7,
+		0xfe7fe000,
+		66
+	},
+	{
+		0x3f,
+		0xc3fc3fc3,
+		0xfc000000,
+		66
+	},
+	{
+		0x3f,
+		0xc3fc3fc3,
+		0xfc000000,
+		66
+	},
+	{
+		0x0,
+		0x1f81f80,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x1f81f80,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0xf00f00,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0xf00f00,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x600600,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x200400,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x200400,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x0,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x0,
+		0x0,
+		66
+	}
+};
+
+
+
+
+turnon
+const uint32_t turnon[][4] = {
+	{
+		0x0,
+		0x200400,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x200400,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x600600,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x600600,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0xf00f00,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x1f81f80,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x1f81f80,
+		0x0,
+		66
+	},
+	{
+		0x3f,
+		0xc3fc3fc3,
+		0xfc000000,
+		66
+	},
+	{
+		0x3f,
+		0xc3fc3fc3,
+		0xfc000000,
+		66
+	},
+	{
+		0x7fe7f,
+		0xe7fe7fe7,
+		0xfe7fe000,
+		66
+	},
+	{
+		0x7fe7f,
+		0xe7fe7fe7,
+		0xfe7fe000,
+		66
+	},
+	{
+		0xffffffff,
+		0xffffffff,
+		0xffffffff,
+		66
+	},
+	{
+		0xffffffff,
+		0xffffffff,
+		0xffffffff,
+		66
+	},
+	{
+		0x0,
+		0x0,
+		0x0,
+		66
+	},
+	{
+		0x0,
+		0x0,
+		0x0,
+		66
+	}
+};
+
+
+
+FINAL CODE:
+
+#include "Arduino_LED_Matrix.h"
+ 
+//include the "eat.h", "pacman.h", voteandwink.h", and "turnoff.h" header file that stores the frames for the animation
+#include "eat.h"
+#include "pacman.h"
+#include "voteandwink.h"
+#include "turnoff.h"
+ 
+// make an instance of the library:
+ArduinoLEDMatrix matrix;
+ 
+void setup() {
+ 
+  //opens serial port
+  Serial.begin(9600);
+ 
+  //introduced functions
+  Serial.println("Please type 'eat' or 'pacman' to play animation");
+  Serial.println( "Press reset button and type 'turn off' to powerdown");
+ 
+  //plays startup animation on loop until typed input
+    matrix.loadSequence(voteandwink);
+    matrix.begin();
+    matrix.play(true);
+ 
+}
+ 
+void loop() {
+ 
+  //if there is an input in the Serial monitor, then...
+  if (Serial.available() > 0) {
+   
+    // Read incoming text
+    String incomingText = Serial.readStringUntil('\n'); // Read until newline
+ 
+    // Check the received text and respond accordingly
+    if (incomingText == "eat") {
+ 
+      //prints typed input (eat)
+      Serial.println("eat");
+ 
+      //play eat animation
+      matrix.loadSequence(eat);
+      matrix.begin();
+      matrix.play(true);
+    }
+ 
+    else if (incomingText == "pacman") {
+ 
+      //prints typed input (pacman)
+      Serial.println("pacman");
+ 
+      //play pacman animation
+      matrix.loadSequence(pacman);
+      matrix.begin();
+      matrix.play(true);
+    }
+ 
+    else if (incomingText == "turn off") {
+ 
+      //prints typed input (turn off)
+      Serial.println("turn off");
+ 
+      //play turn off animation
+      matrix.loadSequence(turnoff);
+      matrix.begin();
+      matrix.play(true);
+ 
+      //turns off LED Matrix
+      matrix.play(false);
+    }
+  }
+}
+Libraries:
+const uint32_t eat[][4] = {
+  {
+    0x0,
+    0x400000,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x400000,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x600600,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x600600,
+    0x0,
+    66
+  },
+  {
+    0x6,
+    0x900900,
+    0x60000000,
+    66
+  },
+  {
+    0x6,
+    0x900900,
+    0x60000000,
+    66
+  },
+  {
+    0x6009,
+    0x1081080,
+    0x90060000,
+    66
+  },
+  {
+    0x6009,
+    0x1081080,
+    0x90060000,
+    66
+  },
+  {
+    0xf010820,
+    0x42942042,
+    0x641080f0,
+    66
+  },
+  {
+    0xf010820,
+    0x42942042,
+    0x641080f0,
+    66
+  },
+  {
+    0x10820459,
+    0xa59a4024,
+    0xf2264108,
+    66
+  },
+  {
+    0x10820459,
+    0xa59a4024,
+    0xf2264108,
+    66
+  },
+  {
+    0x10820459,
+    0xa59a4024,
+    0xf2294168,
+    66
+  },
+  {
+    0x10820459,
+    0xa59a4024,
+    0xf2294168,
+    66
+  },
+  {
+    0x204402b0,
+    0xdb0d8619,
+    0x9950a2f4,
+    66
+  },
+  {
+    0x204402b0,
+    0xdb0d8619,
+    0x9950a2f4,
+    66
+  },
+  {
+    0x40280170,
+    0xe70e6f61,
+    0x8909492,
+    66
+  },
+  {
+    0x40280170,
+    0xe70e6f61,
+    0x8909492,
+    66
+  },
+  {
+    0x70e70e76,
+    0xe09030c4,
+    0x2402a05,
+    66
+  },
+  {
+    0x70e70e76,
+    0xe09030c4,
+    0x2402a05,
+    66
+  },
+  {
+    0xe07ef710,
+    0x82044024,
+    0x2402204,
+    66
+  },
+  {
+    0xe07ef710,
+    0x82044024,
+    0x2402204,
+    66
+  },
+  {
+    0xd0b20440,
+    0x28018018,
+    0x1402204,
+    66
+  },
+  {
+    0xd0b20440,
+    0x28018018,
+    0x1402204,
+    66
+  },
+  {
+    0x40280100,
+    0x0,
+    0x801,
+    66
+  },
+  {
+    0x40280100,
+    0x0,
+    0x801,
+    66
+  },
+  {
+    0x80100000,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x80100000,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  }
+};
+const uint32_t voteandwink[][4] = {
+  {
+    0x0,
+    0x200400,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x200400,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x600600,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x600600,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0xf00f00,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x1f81f80,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x1f81f80,
+    0x0,
+    66
+  },
+  {
+    0x3f,
+    0xc3fc3fc3,
+    0xfc000000,
+    66
+  },
+  {
+    0x3f,
+    0xc3fc3fc3,
+    0xfc000000,
+    66
+  },
+  {
+    0x7fe7f,
+    0xe7fe7fe7,
+    0xfe7fe000,
+    66
+  },
+  {
+    0x7fe7f,
+    0xe7fe7fe7,
+    0xfe7fe000,
+    66
+  },
+  {
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    66
+  },
+  {
+    0xffffffff,
+    0xffffffff,
+    0xffffffff,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+{
+        0x82382444,
+        0x84482882,
+        0x88104103,
+        66
+    },
+    {
+        0x4604989,
+        0x8905105,
+        0x10209206,
+        66
+    },
+    {
+        0x8c09212,
+        0x1121a21a,
+        0x2141240c,
+        66
+    },
+    {
+        0x11812424,
+        0x22424424,
+        0x42824818,
+        66
+    },
+    {
+        0x23124848,
+        0x44848848,
+        0x84048030,
+        66
+    },
+    {
+        0x46349090,
+        0x89081081,
+        0x8090060,
+        66
+    },
+    {
+        0x8c792121,
+        0x12112112,
+        0x111210c1,
+        66
+    },
+    {
+        0x18f24242,
+        0x24224224,
+        0x22242182,
+        66
+    },
+    {
+        0x31f48484,
+        0x48448448,
+        0x44484304,
+        66
+    },
+    {
+        0x63e90808,
+        0x80880880,
+        0x88908608,
+        66
+    },
+    {
+        0xc7d21111,
+        0x11111111,
+        0x11211c11,
+        66
+    },
+    {
+        0x8fb42222,
+        0x22232222,
+        0x22422823,
+        66
+    },
+    {
+        0x1f784444,
+        0x44474444,
+        0x44844047,
+        66
+    },
+    {
+        0x3ef08888,
+        0x888e8888,
+        0x8808808f,
+        66
+    },
+    {
+        0x7de11011,
+        0x11c1101,
+        0x1011011e,
+        66
+    },
+    {
+        0xfbc22022,
+        0x2382202,
+        0x2022023c,
+        66
+    },
+    {
+        0xf7844044,
+        0x4704404,
+        0x40440478,
+        66
+    },
+    {
+        0xef088088,
+        0x8e08808,
+        0x808808f0,
+        66
+    },
+    {
+        0xde110110,
+        0x11c11011,
+        0x11011e1,
+        66
+    },
+    {
+        0xbc320220,
+        0x23832022,
+        0x22023c2,
+        66
+    },
+    {
+        0x78740440,
+        0x47074044,
+        0x4404784,
+        66
+    },
+    {
+        0xf0f80880,
+        0x8e0e8088,
+        0x8808f08,
+        66
+    },
+    {
+        0xe1e01001,
+        0xc1c0100,
+        0x10010e10,
+        66
+    },
+    {
+        0xc3c02002,
+        0x18390210,
+        0x21020c20,
+        66
+    },
+    {
+        0x87804104,
+        0x20720420,
+        0x42041840,
+        66
+    },
+    {
+        0xf108208,
+        0x40e40840,
+        0x84082081,
+        66
+    },
+    {
+        0x1e310410,
+        0x81c81081,
+        0x8104103,
+        66
+    },
+    {
+        0x3c620921,
+        0x3902102,
+        0x10209206,
+        66
+    },
+    {
+        0x78c41242,
+        0x17214214,
+        0x2141240c,
+        66
+    },
+    {
+        0xf1882484,
+        0x2e428428,
+        0x42824818,
+        66
+    },
+    {
+        0xe3104908,
+        0x5c850850,
+        0x85049031,
+        66
+    },
+    {
+        0xc6309210,
+        0xa90b10a1,
+        0xa092062,
+        66
+    },
+    {
+        0x8c712421,
+        0x42172142,
+        0x141240c4,
+        66
+    },
+    {
+        0x18f24942,
+        0x942e4294,
+        0x29249189,
+        66
+    },
+    {
+        0x31e49285,
+        0x285c8528,
+        0x52492312,
+        66
+    },
+    {
+        0x63c9240a,
+        0x40b80a40,
+        0xa4924624,
+        66
+    },
+    {
+        0xc7824814,
+        0x81701481,
+        0x48248c48,
+        66
+    },
+    {
+        0x8f049029,
+        0x2e02902,
+        0x90490890,
+        66
+    },
+    {
+        0x1e192152,
+        0x15c15215,
+        0x21921120,
+        66
+    },
+    {
+        0x3c2242a4,
+        0x2b82a42a,
+        0x42242241,
+        66
+    },
+    {
+        0x78448448,
+        0x47044844,
+        0x84484483,
+        66
+    },
+    {
+        0xf0890890,
+        0x8e089089,
+        0x8908907,
+        66
+    },
+    {
+        0xe1121121,
+        0x1c112112,
+        0x1121120e,
+        66
+    },
+    {
+        0xc2242242,
+        0x28224224,
+        0x2242241c,
+        66
+    },
+    {
+        0x84484584,
+        0x50448448,
+        0x44845838,
+        66
+    },
+    {
+        0x8908a08,
+        0xa0890880,
+        0x8808a071,
+        66
+    },
+    {
+        0x11311411,
+        0x41121111,
+        0x101140e3,
+        66
+    },
+    {
+        0x22622922,
+        0x82242222,
+        0x212291c6,
+        66
+    },
+    {
+        0x44c45245,
+        0x4484444,
+        0x4245238c,
+        66
+    },
+    {
+        0x8998a58a,
+        0x18918898,
+        0x858a4719,
+        66
+    },
+    {
+        0x13214a14,
+        0x21221121,
+        0xa148e32,
+        66
+    },
+    {
+        0x26429428,
+        0x42442242,
+        0x14290c64,
+        66
+    },
+    {
+        0x4c852850,
+        0x84884484,
+        0x285208c8,
+        66
+    },
+    {
+        0x990a50a1,
+        0x9108908,
+        0x50a40190,
+        66
+    },
+    {
+        0x3204a042,
+        0x2201200,
+        0xa0480320,
+        66
+    },
+    {
+        0x64094084,
+        0x4402401,
+        0x40900640,
+        66
+    },
+    {
+        0xc8028008,
+        0x8804802,
+        0x80200c80,
+        66
+    },
+    {
+        0x90050010,
+        0x1009005,
+        0x400900,
+        66
+    },
+    {
+        0x200a0020,
+        0x200200a,
+        0x800200,
+        66
+    },
+    {
+        0x40040040,
+        0x4004004,
+        0x400,
+        66
+    },
+    {
+        0x80080080,
+        0x8008008,
+        0x800,
+        66
+    },
+    {
+        0x0,
+        0x0,
+        0x0,
+        66
+    },
+{
+    0xf010829,
+    0x42942042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x42942042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x42942042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x42942042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x42942042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010828,
+    0x42b43042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010828,
+    0x42b43042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010828,
+    0x42b43042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010828,
+    0x42b43042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010828,
+    0x42b43042,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x429430c2,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x429430c2,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x429430c2,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x429430c2,
+    0xf41080f0,
+    66
+  },
+  {
+    0xf010829,
+    0x429430c2,
+    0xf41080f0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+{
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  }
+};
+const uint32_t pacman[][4] = {
+  {
+    0x38044382,
+    0x78278234,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044682,
+    0xf82f8264,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044c83,
+    0xe8de82c4,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044c83,
+    0xe8de82c4,
+    0x40380fff,
+    66
+  },
+  {
+    0x3804708f,
+    0x89788b04,
+    0x40380fff,
+    66
+  },
+  {
+    0x3804708f,
+    0x89788b04,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8208204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8208204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044088,
+    0x9008804,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044088,
+    0x9008804,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38144182,
+    0x18218214,
+    0x41381fff,
+    66
+  },
+  {
+    0x38144182,
+    0x18218214,
+    0x41381fff,
+    66
+  },
+  {
+    0x38144282,
+    0x28c38224,
+    0x42383fff,
+    66
+  },
+  {
+    0x38144282,
+    0x28c38224,
+    0x42383fff,
+    66
+  },
+  {
+    0x38344488,
+    0x49068844,
+    0x45386fff,
+    66
+  },
+  {
+    0x38344488,
+    0x49068844,
+    0x45386fff,
+    66
+  },
+  {
+    0x38744882,
+    0x88cd8284,
+    0x4a38dfff,
+    66
+  },
+  {
+    0x38744882,
+    0x88cd8284,
+    0x4a38dfff,
+    66
+  },
+  {
+    0x38f45189,
+    0x191b8914,
+    0x5539bfff,
+    66
+  },
+  {
+    0x38f45189,
+    0x191b8914,
+    0x5539bfff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8208204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8208204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+  {
+    0x38044082,
+    0x8c08204,
+    0x40380fff,
+    66
+  },
+{
+        0x38044088,
+        0x9008804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9018804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9118804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9118804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9208804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9218804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c28204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8248204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c88204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9108804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9108804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8208204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8208204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9008804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044088,
+        0x9008804,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044082,
+        0x8c08204,
+        0x40380fff,
+        66
+    },
+    {
+        0x38044182,
+        0x18c18214,
+        0x41381fff,
+        66
+    },
+    {
+        0x38144282,
+        0x28238224,
+        0x42383fff,
+        66
+    },
+    {
+        0x38344482,
+        0x48c68244,
+        0x45386fff,
+        66
+    },
+    {
+        0x38744882,
+        0x88cd8284,
+        0x4a38dfff,
+        66
+    },
+    {
+        0x38e45189,
+        0x191b8914,
+        0x5539bfff,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x0,
+        0x0,
+        0x0,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x0,
+        0x0,
+        0x0,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x0,
+        0x400,
+        0x0,
+        66
+    },
+    {
+        0x0,
+        0x600,
+        0x0,
+        66
+    },
+    {
+        0x0,
+        0x900600,
+        0x90000000,
+        66
+    },
+    {
+        0x0,
+        0x900600,
+        0x90000000,
+        66
+    },
+    {
+        0x10,
+        0x80900600,
+        0x90108000,
+        66
+    },
+    {
+        0x10,
+        0x80900600,
+        0x90108000,
+        66
+    },
+    {
+        0x30,
+        0xc0900600,
+        0x9030c000,
+        66
+    },
+    {
+        0x30,
+        0xc0900600,
+        0x9030c000,
+        66
+    },
+    {
+        0x40230,
+        0xc0900600,
+        0x9030c402,
+        66
+    },
+    {
+        0x40230,
+        0xc0900600,
+        0x9030c402,
+        66
+    },
+    {
+        0xc0330,
+        0xc0900600,
+        0x9030cc03,
+        66
+    },
+    {
+        0xc0330,
+        0xc0900600,
+        0x9030cc03,
+        66
+    },
+    {
+        0x801c0330,
+        0xc0900600,
+        0x9030cc03,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    },
+    {
+        0x39c4628a,
+        0x29368a24,
+        0x6a3b6fff,
+        66
+    }
+
+};
+const uint32_t turnoff[][4] = {
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x7fe7f,
+    0xe7fe7fe7,
+    0xfe7fe000,
+    66
+  },
+  {
+    0x7fe7f,
+    0xe7fe7fe7,
+    0xfe7fe000,
+    66
+  },
+  {
+    0x3f,
+    0xc3fc3fc3,
+    0xfc000000,
+    66
+  },
+  {
+    0x3f,
+    0xc3fc3fc3,
+    0xfc000000,
+    66
+  },
+  {
+    0x0,
+    0x1f81f80,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x1f81f80,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0xf00f00,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0xf00f00,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x600600,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x200400,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x200400,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+  {
+    0x0,
+    0x0,
+    0x0,
+    66
+  },
+};
